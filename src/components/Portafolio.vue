@@ -408,7 +408,7 @@
 
 <script>
 export default {
-  name: "HelloWorld",
+  name: "MiPortafolio",
   props: {
     msg: String,
   },
