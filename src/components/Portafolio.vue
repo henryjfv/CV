@@ -211,6 +211,10 @@
               <i class="fab fa-apple"></i>
               Manage Apple Store
             </li>
+            <li class="">
+              <i class="fab fa-aws"></i>
+                AWS
+            </li>
             <!--             <li class="">
                 <i class="fab fa-angular"></i>
                 ANGULAR
