@@ -1,28 +1,14 @@
 <template>
   <div id="page-top">
     <!-- Navigation-->
-    <nav
-      class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top"
-      id="sideNav"
-    >
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav">
       <a class="navbar-brand js-scroll-trigger" href="#page-top">
         <span class="d-block d-lg-none">Henry Fernandez</span>
-        <span class="d-none d-lg-block"
-          ><img
-            class="img-fluid img-profile rounded-circle mx-auto mb-2"
-            src="@\assets\img\fotoPerfil.jpg"
-            alt="fotoperfil"
-        /></span>
+        <span class="d-none d-lg-block"><img class="img-fluid img-profile rounded-circle mx-auto mb-2"
+            src="@\assets\img\fotoPerfil.jpg" alt="fotoperfil" /></span>
       </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarResponsive"
-        aria-controls="navbarResponsive"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
@@ -31,14 +17,10 @@
             <a class="nav-link js-scroll-trigger" href="#about">About</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#experience"
-              >Experience</a
-            >
+            <a class="nav-link js-scroll-trigger" href="#experience">Experience</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#education"
-              >Education</a
-            >
+            <a class="nav-link js-scroll-trigger" href="#education">Education</a>
           </li>
           <li class="nav-item">
             <a class="nav-link js-scroll-trigger" href="#skills">Skills</a>
@@ -59,33 +41,21 @@
             <span class="text-primary">Fernandez Villarreal</span>
           </h1>
           <div class="subheading mb-5">
-            Barranquilla, Atlantico, Colombia
-            <a href="mailto:henryfernandezv@gmail.com"
-              >henryfernandezv@gmail.com</a
-            >
+            Medellín, Antioquia, Colombia
+            <a href="mailto:henryfernandezv@gmail.com">henryfernandezv@gmail.com</a>
           </div>
           <p class="lead mb-5">
-            Systems Engineer, with 5+ years of experience developing software,
-            able to manage Apple Store and Play Store, 2 years developing mobile
-            applications using Android (java), 3+ years developing mobile
-            applications using Flutter (Android and iOS), also developing web
-            applications using Html, Css, Javascript, Vuejs, SQL; using Git as a
-            versioning manager throughout my career, using the Scrum agile
-            development methodology.
+            Systems engineer with 7 years of experience in the development sector, I have a high sense of belonging,
+            honesty, responsibility, constant desire to learn, give the best of myself, placing my knowledge as tools
+            willing to serve and easy to work as a team. My objectives are to achieve everything I set out to do, based on
+            an innovative spirit and leadership aimed at achieving the proposed goals, considering the opportunities and
+            innovations that may appear day by day without losing the objectives.
+
           </p>
           <div class="social-icons">
-            <a
-              class="social-icon"
-              href="https://www.linkedin.com/in/henryjosefernandez-villarreal/"
-              target="_blank"
-              ><i class="fab fa-linkedin-in"></i
-            ></a>
-            <a
-              class="social-icon"
-              href="https://github.com/henryjfv"
-              target="_blank"
-              ><i class="fab fa-github"></i
-            ></a>
+            <a class="social-icon" href="https://www.linkedin.com/in/henryjosefernandez-villarreal/" target="_blank"><i
+                class="fab fa-linkedin-in"></i></a>
+            <a class="social-icon" href="https://github.com/henryjfv" target="_blank"><i class="fab fa-github"></i></a>
           </div>
         </div>
       </section>
@@ -94,9 +64,21 @@
       <section class="resume-section" id="experience">
         <div class="resume-section-content">
           <h2 class="mb-5">Experience</h2>
-          <div
-            class="d-flex flex-column flex-md-row justify-content-between mb-5"
-          >
+          <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+            <div class="flex-grow-1">
+              <h3 class="mb-0">Senior Full Stack Mobil</h3>
+              <div class="subheading mb-3">INDRA COMPANY</div>
+              <p>
+                Mobile applications development using technologies such as, React Native, Flutter and Ionic, Nodejs,
+                Serverless, AWS (Lambdas, Dynamo, VPC, S3, ...), technical leader, management of the development team,
+                Meetings with the client to obtain requirements, Bug fixes.
+              </p>
+            </div>
+            <div class="flex-shrink-0">
+              <span class="text-primary">Mar 25, 2022 – Currently</span>
+            </div>
+          </div>
+          <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
             <div class="flex-grow-1">
               <h3 class="mb-0">Full Stack Developer</h3>
               <div class="subheading mb-3">OPENSOLS</div>
@@ -108,12 +90,10 @@
               </p>
             </div>
             <div class="flex-shrink-0">
-              <span class="text-primary">August 06, 2018 - Currently</span>
+              <span class="text-primary">August 06, 2018 - Mar 24, 2022</span>
             </div>
           </div>
-          <div
-            class="d-flex flex-column flex-md-row justify-content-between mb-5"
-          >
+          <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
             <div class="flex-grow-1">
               <h3 class="mb-0">Android Developer</h3>
               <div class="subheading mb-3">CLOUD TECHNOLOGYS CENTER</div>
@@ -135,9 +115,16 @@
       <section class="resume-section" id="education">
         <div class="resume-section-content">
           <h2 class="mb-5">Education</h2>
-          <div
-            class="d-flex flex-column flex-md-row justify-content-between mb-5"
-          >
+          <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+            <div class="flex-grow-1">
+              <h3 class="mb-0">ILAC Internat ional Language Academy of Canada</h3>
+              <div class="subheading mb-3">Pre-Advanced (Level 10)</div>
+            </div>
+            <div class="flex-shrink-0">
+              <span class="text-primary">Jun 03, 2022</span>
+            </div>
+          </div>
+          <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
             <div class="flex-grow-1">
               <h3 class="mb-0">Universidad Libre seccional Barranquilla</h3>
               <div class="subheading mb-3">Systems Engineering</div>
@@ -154,75 +141,71 @@
         <div class="resume-section-content">
           <h2 class="mb-5">Skills</h2>
           <div class="subheading mb-3">Programming Languages & Tools</div>
-          <ul class="" style="list-style: none">
-            <li class="">
+          <ul style="list-style: none">
+            <li>
               <i class="fab fa-html5"></i>
               HTML5
             </li>
-            <li class="">
+            <li>
               <i class="fab fa-css3-alt"></i>
               CSS3
             </li>
-            <li class="">
+            <li>
               <i class="fab fa-sass"></i>
               SASS | SCSS
             </li>
-            <li class="">
+            <li>
               <i class="fab fa-js-square"></i>
               JAVASCRIPT
+            </li>
+            <li>
+              <i class="fab fa fa-code"></i>
+              TYPESCRIPT
             </li>
             <li>
               <i class="fab fa-vuejs"></i>
               VUEJS
             </li>
-            <li class="">
+            <li>
               <i class="fa fa-mobile-alt"></i>
               Flutter
-            </li>
-            <li class="">
-              <i class="fab fa-android"></i>
-              Android
-            </li>
-            <li class="">
+              <i class="fab fa-android"></i> |
               <i class="fab fa-apple"></i>
-              iOS
             </li>
-            <li class="">
-              <i class="fab fa-python"></i>
-              Django
+            <li>
+              <i class="fab fa-react"></i>
+              REACT NATIVE
+              <i class="fab fa-android"></i> |
+              <i class="fab fa-apple"></i>
             </li>
-            <li class="">
+            <li>
               <i class="fab fa-java"></i>
               Java
             </li>
-            <li class="">
+            <li>
               <i class="fa fa-database"></i>
               SQL
             </li>
-            <li class="">
+            <li>
               <i class="fab fa-git"></i>
               GIT
             </li>
-            <li class="">
+            <li>
               <i class="fab fa-google-play"></i>
               Manage PlayStore
             </li>
-            <li class="">
+            <li>
               <i class="fab fa-apple"></i>
               Manage Apple Store
             </li>
-            <li class="">
+            <li>
               <i class="fab fa-aws"></i>
-                AWS
+              AWS
             </li>
-            <!--             <li class="">
-                <i class="fab fa-angular"></i>
-                ANGULAR
+            <li>
+              <i class="fab fa-react"></i>
+              REACT JS
             </li>
-            <li class="">
-                <i class="fab fa-react"></i>
-                REACT
-            </li> -->
           </ul>
           <div class="subheading mb-3">Workflow</div>
           <ul class="fa-ul mb-0">
@@ -267,28 +250,16 @@
         <div class="resume-section-content">
           <h2 class="mb-5">Certifications</h2>
 
-          <div
-            id="carouselExampleIndicators"
-            class="carousel slide"
-            data-bs-ride="carousel"
-            style="background-color: #b7b7b7"
-          >
+          <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel"
+            style="background-color: #b7b7b7">
             <div class="carousel-indicators">
-              <button
-                type="button"
-                data-bs-target="#carouselExampleIndicators"
-                data-bs-slide-to="0"
-                class="active"
-                aria-current="true"
-                aria-label="Slide 1"
-              ></button>
-              <button
-                type="button"
-                data-bs-target="#carouselExampleIndicators"
-                data-bs-slide-to="1"
-                aria-label="Slide 2"
-              ></button>
-         <!--      <button
+              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
+                aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+                aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
+                aria-label="Slide 3"></button>
+              <!--      <button
                 type="button"
                 data-bs-target="#carouselExampleIndicators"
                 data-bs-slide-to="2"
@@ -297,52 +268,26 @@
             </div>
             <div class="carousel-inner">
               <div class="carousel-item active">
-                <img
-                  src="@\assets\img\cert1.png"
-                  class="d-block w-100"
-                  style="height: 40rem; object-fit: scale-down"
-                  alt="..."
-                />
+                <img src="@\assets\img\cert1.png" class="d-block w-100" style="height: 40rem; object-fit: scale-down"
+                  alt="..." />
               </div>
-<!--               <div class="carousel-item">
-                <img
-                  src="@\assets\img\fotoPerfil.jpg"
-                  class="d-block w-100"
-                  style="height: 40rem; object-fit: scale-down"
-                  alt="..."
-                />
-              </div> -->
               <div class="carousel-item">
-                <img
-                  src="@\assets\img\cert2.png"
-                  class="d-block w-100"
-                  style="height: 40rem; object-fit: scale-down"
-                  alt="..."
-                />
+                <img src="@\assets\img\ilac.png" class="d-block w-100" style="height: 40rem; object-fit: scale-down"
+                  alt="..." />
+              </div>
+              <div class="carousel-item">
+                <img src="@\assets\img\cert2.png" class="d-block w-100" style="height: 40rem; object-fit: scale-down"
+                  alt="..." />
               </div>
             </div>
-            <button
-              class="carousel-control-prev"
-              type="button"
-              data-bs-target="#carouselExampleIndicators"
-              data-bs-slide="prev"
-            >
-              <span
-                class="carousel-control-prev-icon"
-                aria-hidden="true"
-              ></span>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+              data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Previous</span>
             </button>
-            <button
-              class="carousel-control-next"
-              type="button"
-              data-bs-target="#carouselExampleIndicators"
-              data-bs-slide="next"
-            >
-              <span
-                class="carousel-control-next-icon"
-                aria-hidden="true"
-              ></span>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+              data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Next</span>
             </button>
           </div>
