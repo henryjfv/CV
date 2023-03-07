@@ -66,7 +66,7 @@
           <h2 class="mb-5">Experience</h2>
           <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
             <div class="flex-grow-1">
-              <h3 class="mb-0">Senior Full Stack Mobil</h3>
+              <h3 class="mb-0">Senior Full Stack Mobile</h3>
               <div class="subheading mb-3">INDRA COMPANY</div>
               <p>
                 Mobile applications development using technologies such as, React Native, Flutter and Ionic, Nodejs,
