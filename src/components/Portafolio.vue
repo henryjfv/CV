@@ -215,7 +215,7 @@
             </li>
             <li>
               <span class="fa-li"><i class="fas fa-check"></i></span>
-              Analisys of requirements
+              Analysis of requirements
             </li>
             <li>
               <span class="fa-li"><i class="fas fa-check"></i></span>
@@ -259,6 +259,8 @@
                 aria-label="Slide 2"></button>
               <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
                 aria-label="Slide 3"></button>
+              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3"
+                aria-label="Slide 3"></button>
               <!--      <button
                 type="button"
                 data-bs-target="#carouselExampleIndicators"
@@ -269,15 +271,19 @@
             <div class="carousel-inner">
               <div class="carousel-item active">
                 <img src="@\assets\img\cert1.png" class="d-block w-100" style="height: 40rem; object-fit: scale-down"
-                  alt="..." />
+                  alt="Seminary" />
               </div>
               <div class="carousel-item">
                 <img src="@\assets\img\ilac.png" class="d-block w-100" style="height: 40rem; object-fit: scale-down"
-                  alt="..." />
+                  alt="ILAC" />
               </div>
               <div class="carousel-item">
                 <img src="@\assets\img\cert2.png" class="d-block w-100" style="height: 40rem; object-fit: scale-down"
-                  alt="..." />
+                  alt="University" />
+              </div>
+              <div class="carousel-item">
+                <img src="@\assets\img\cert3.jpg" class="d-block w-100" style="height: 40rem; object-fit: scale-down"
+                  alt="Node Udemy" />
               </div>
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
