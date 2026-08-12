@@ -2,6 +2,13 @@
 node_modules
 /dist
 
+# SSH keys must never live in the repo
+machenry
+machenry.pub
+*.pem
+id_ed25519*
+id_rsa*
+
 
 # local env files
 .env.local

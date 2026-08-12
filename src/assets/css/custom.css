@@ -1,0 +1,257 @@
+/*
+ * Project styles layered on top of the vendored Start Bootstrap Resume theme.
+ * Nothing here overrides the theme's structure; it only styles the sections
+ * that are new (availability banner, skill groups, certification list, CTA)
+ * and adds the print sheet used by the "Download PDF" button.
+ */
+
+/* --- Availability banner --------------------------------------------- */
+
+.availability-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.75rem 0 1.25rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid rgba(21, 101, 192, 0.35);
+  border-radius: 2rem;
+  background-color: rgba(21, 101, 192, 0.08);
+  color: #1565c0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.availability-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: #1565c0;
+  flex-shrink: 0;
+}
+
+/* --- Contact line ------------------------------------------------------ */
+
+.contact-line {
+  /* The obfuscated address is long; let it wrap instead of pushing the line. */
+  overflow-wrap: anywhere;
+}
+
+.contact-separator {
+  margin: 0 0.4rem;
+  opacity: 0.55;
+}
+
+/* --- Call to action --------------------------------------------------- */
+
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.cta-row .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+/* The vendored theme still ships the original Resume orange for .btn-primary
+   while --bs-primary is blue, so the CTA is realigned to the theme accent. */
+.cta-row .btn-primary,
+.cta-row .btn-primary:focus {
+  border-color: #1565c0;
+  background-color: #1565c0;
+  color: #fff;
+}
+
+.cta-row .btn-primary:hover,
+.cta-row .btn-primary:active {
+  border-color: #114f96;
+  background-color: #114f96;
+  color: #fff;
+}
+
+/* --- Experience highlights -------------------------------------------- */
+
+.job-highlights {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.job-highlights li {
+  margin-bottom: 0.6rem;
+  line-height: 1.55;
+}
+
+.job-highlights li:last-child {
+  margin-bottom: 0;
+}
+
+/* --- Skills ------------------------------------------------------------ */
+
+.skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.skill-list li {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  background-color: #f8f9fa;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+/* --- Certifications ---------------------------------------------------- */
+
+.certification-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.certification-list li {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.certification-list li:first-child {
+  padding-top: 0;
+}
+
+.certification-list li:last-child {
+  border-bottom: none;
+}
+
+.certification-name {
+  display: block;
+  color: #343a40;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.certification-meta {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.9rem;
+}
+
+.certification-link {
+  display: inline-block;
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+}
+
+/* --- Print sheet -------------------------------------------------------
+ * The theme gives every section min-height: 100vh and offsets the body for
+ * the fixed sidebar. Both have to be undone or each section prints as its
+ * own near-empty page.
+ */
+
+@media print {
+  @page {
+    margin: 14mm 12mm;
+  }
+
+  body {
+    padding-top: 0 !important;
+    padding-left: 0 !important;
+    color: #000;
+    font-size: 10.5pt;
+  }
+
+  #sideNav,
+  .cta-row,
+  .social-icons,
+  .certification-link,
+  hr {
+    display: none !important;
+  }
+
+  /* No page-break-inside here: these sections are taller than a page, and
+     avoiding breaks inside them pushes each one onto a fresh sheet. */
+  section.resume-section {
+    display: block !important;
+    min-height: 0 !important;
+    max-width: none;
+    padding: 0 0 0.8rem !important;
+  }
+
+  h1 {
+    font-size: 22pt;
+  }
+
+  h2 {
+    margin-bottom: 0.6rem !important;
+    font-size: 14pt;
+  }
+
+  h3 {
+    font-size: 12.5pt;
+  }
+
+  /* The theme sets .subheading to 1.5rem, which prints larger than the job
+     title above it and inverts the hierarchy. */
+  .subheading {
+    font-size: 10.5pt;
+  }
+
+  .job-highlights {
+    margin-bottom: 0.35rem;
+  }
+
+  .flex-shrink-0 {
+    margin-top: 0.2rem;
+  }
+
+  h1,
+  h2,
+  h3,
+  .certification-name {
+    color: #000;
+  }
+
+  /* Keep the accent readable in greyscale rather than relying on hue alone. */
+  .text-primary {
+    color: #000 !important;
+    font-weight: 700;
+  }
+
+  .availability-banner {
+    border-color: #999;
+    background: none;
+    color: #000;
+  }
+
+  .lead {
+    margin-bottom: 1rem !important;
+    font-size: 11pt;
+  }
+
+  .mb-5 {
+    margin-bottom: 1rem !important;
+  }
+
+  .skill-list li {
+    border-color: #bbb;
+    background: none;
+  }
+
+  .job-highlights li,
+  .certification-list li,
+  .skill-group {
+    page-break-inside: avoid;
+  }
+
+  a {
+    color: #000;
+    text-decoration: none;
+  }
+}

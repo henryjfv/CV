@@ -1,6 +1,7 @@
 <template>
-  <Portafolio msg="Welcome to Your Vue.js App" />
+  <Portafolio />
 </template>
+
 <script>
 import Portafolio from "./components/Portafolio.vue";
 
@@ -10,8 +11,9 @@ export default {
     Portafolio,
   },
 };
-window.document.title = 'Henry Jose Fernandez Villarreal';
 </script>
+
 <style>
-  @import 'assets/css/styles.css';
+@import 'assets/css/styles.css';
+@import 'assets/css/custom.css';
 </style>
