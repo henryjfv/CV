@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import type { Station } from "@/data/world";
+import { worldTiers } from "@/world/engine/metrics";
 
 /**
  * What a station is, in words.
@@ -13,12 +14,28 @@ import type { Station } from "@/data/world";
  */
 export function StationPanel({
   station,
+  floor,
+  onFloor,
   onClose,
 }: {
   station: Station;
+  /** Which floor the camera is on. The panel and the building stay in step. */
+  floor: number;
+  onFloor: (floor: number) => void;
   onClose: () => void;
 }) {
   const panel = useRef<HTMLElement>(null);
+
+  // Floor numbers count from the ground up — that is what the camera climbs —
+  // but the list reads top-down, so the numbering is kept and the order
+  // reversed rather than the other way round.
+  const floors = useMemo(
+    () =>
+      worldTiers(station)
+        .map((layer, index) => ({ layer, index }))
+        .reverse(),
+    [station]
+  );
 
   useEffect(() => {
     panel.current?.focus();
@@ -66,12 +83,23 @@ export function StationPanel({
         ))}
       </ul>
 
-      {/* Grouped by tier rather than listed flat, so the panel repeats the
-          shape the building just showed: interfaces over services over data. */}
+      {/* The floors of the building, listed the way a building directory is:
+          top floor first. The one the camera is standing on is marked —
+          scrolling the world moves this marker, and clicking a floor moves the
+          world. The panel is not a modal over the scene; it is its index. */}
       <dl className="panel__layers">
-        {station.layers.map((layer) => (
-          <div key={layer.id} className={`panel__layer panel__layer--${layer.id}`}>
-            <dt>{layer.label}</dt>
+        {floors.map(({ layer, index }) => (
+          <div
+            key={layer.id}
+            className={`panel__layer panel__layer--${layer.id}${
+              index === floor ? " is-current" : ""
+            }`}
+          >
+            <dt>
+              <button type="button" onClick={() => onFloor(index)}>
+                {layer.label}
+              </button>
+            </dt>
             <dd>
               {layer.nodes.map((node) => (
                 <span key={node}>{node}</span>

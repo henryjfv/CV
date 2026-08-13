@@ -1,8 +1,9 @@
 "use client";
 
 import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
+import { registerLabel } from "./labels";
 import { useTextTexture } from "./useTextTexture";
 
 type ProjectedTextProps = {
@@ -37,6 +38,15 @@ type ProjectedTextProps = {
    * away from the thing it names.
    */
   billboard?: boolean;
+  /**
+   * Enters the label into the collision pass: it will be hidden rather than
+   * allowed to overlap a nearer label or be cut by the edge of the frame.
+   * Only for type that names an object in space — anything set into the
+   * architecture itself is part of the architecture and always drawn.
+   */
+  avoidCollisions?: boolean;
+  /** Higher survives a collision. Used to keep the active building's labels. */
+  priority?: number;
 };
 
 /**
@@ -54,14 +64,28 @@ export function ProjectedText({
   fontWeight = 500,
   mode = "projected",
   billboard = false,
+  avoidCollisions = false,
+  priority = 0,
 }: ProjectedTextProps) {
   const generated = useTextTexture({ text, tracking, fontWeight });
   const mesh = useRef<THREE.Mesh>(null);
+
+  // Computed before the early return below, so the hooks that need it run on
+  // every render whether or not the texture has been rasterised yet.
+  const aspect = generated?.aspect ?? 1;
+  const height =
+    maxWidth !== undefined ? Math.min(size, maxWidth / aspect) : size;
+  const width = height * aspect;
 
   useFrame(({ camera }) => {
     if (!billboard || !mesh.current) return;
     mesh.current.quaternion.copy(camera.quaternion);
   });
+
+  useEffect(() => {
+    if (!avoidCollisions || !mesh.current) return;
+    return registerLabel({ mesh: mesh.current, width, height, priority });
+  }, [avoidCollisions, width, height, priority, generated]);
 
   const material = useMemo(() => {
     if (!generated) return null;
@@ -78,14 +102,9 @@ export function ProjectedText({
 
   if (!generated || !material) return null;
 
-  const height =
-    maxWidth !== undefined
-      ? Math.min(size, maxWidth / generated.aspect)
-      : size;
-
   return (
     <mesh ref={mesh} position={position} rotation={rotation} material={material}>
-      <planeGeometry args={[height * generated.aspect, height]} />
+      <planeGeometry args={[width, height]} />
     </mesh>
   );
 }

@@ -4,7 +4,14 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { stations } from "@/data/world";
-import { journey, tick } from "./journey";
+import {
+  easeInOutCubic,
+  getSnapshot,
+  journey,
+  subscribe,
+  tick,
+} from "./journey";
+import { stationContentHalf, tierY, worldTiers } from "./metrics";
 import { railGaze, railPath } from "./rail";
 
 /**
@@ -48,11 +55,24 @@ const position = new THREE.Vector3();
 const lookAt = new THREE.Vector3();
 const interest = new THREE.Vector3();
 const parallax = new THREE.Vector2();
+const insideEye = new THREE.Vector3();
+const insideFocus = new THREE.Vector3();
+const swing = new THREE.Vector3();
 
 export function CameraRig({ reducedMotion }: { reducedMotion: boolean }) {
   const camera = useThree((state) => state.camera);
   const size = useThree((state) => state.size);
   const pointer = useRef(new THREE.Vector2(0, 0));
+  // Read in the frame loop, so the rig never rerenders on a level change.
+  const scene = useRef(getSnapshot());
+
+  useEffect(
+    () =>
+      subscribe((next) => {
+        scene.current = next;
+      }),
+    []
+  );
 
   useEffect(() => {
     if (!(camera instanceof THREE.PerspectiveCamera)) return;
@@ -123,9 +143,69 @@ export function CameraRig({ reducedMotion }: { reducedMotion: boolean }) {
       lookAt.y -= parallax.y * PARALLAX_STRENGTH * 0.5;
     }
 
+    // --- Narrow viewports: stand further back -------------------------------
+    // The rail's viewpoints are computed once, for a landscape window. A phone
+    // held upright is about a third as wide as it is tall, and the camera opens
+    // its field of view only so far before the perspective distortion costs
+    // more than the crop did — so past that point it steps back instead.
+    const aspect = size.width / size.height;
+    if (aspect < 1.2) {
+      const pullback = Math.min(2.1, 1.2 / Math.max(aspect, 0.35));
+      position.sub(lookAt).multiplyScalar(pullback).add(lookAt);
+    }
+
+    // --- District: swing round whatever is being stood at ------------------
+    // The rail is kept, and the orbit is a rotation of the eye about the point
+    // it is already looking at. Free flight would have cost the guarantee that
+    // the camera can never end up inside a building or facing away from the
+    // career — the whole reason this world is on a rail.
+    if (Math.abs(journey.orbit) > 0.001) {
+      swing.subVectors(position, lookAt);
+      swing.applyAxisAngle(THREE.Object3D.DEFAULT_UP, journey.orbit);
+      position.addVectors(lookAt, swing);
+    }
+
+    // --- Building: go inside, floor by floor -------------------------------
+    const entry = easeInOutCubic(journey.entry);
+    if (entry > 0.001 && interior(scene.current.selectedId, scene.current.floor)) {
+      position.lerp(insideEye, entry);
+      lookAt.lerp(insideFocus, entry);
+    }
+
     camera.position.copy(position);
     camera.lookAt(lookAt);
   });
 
   return null;
+}
+
+/**
+ * Where the camera stands on a given floor of a given building.
+ *
+ * Level with the floor slab and back far enough to hold the whole tier, rather
+ * than in the middle of the room: a camera set inside a tier ends up between
+ * the technology nodes with half of them behind it, and the point of a floor is
+ * to see the tier whole. The first version stood 7 units off the glass and the
+ * result was one enormous label and no building around it.
+ *
+ * The framing is also pushed to the left of frame, because the panel occupies
+ * the right third — the tier and the words about it should not be stacked on
+ * top of each other.
+ *
+ * Returns false when there is nothing to enter, leaving the rail in charge.
+ */
+function interior(id: string | null, floor: number): boolean {
+  if (!id) return false;
+  const station = stations.find((entry) => entry.id === id);
+  if (!station) return false;
+
+  const tiers = worldTiers(station);
+  const y = tierY(Math.max(0, Math.min(tiers.length - 1, floor)));
+  const reach = stationContentHalf(station);
+  const { x, z } = station.position;
+
+  // Eye to the right of the subject puts the subject on the left of the frame.
+  insideEye.set(x + reach * 0.55, y + 2.6, z + reach * 1.7 + 6);
+  insideFocus.set(x - reach * 0.12, y + 0.7, z);
+  return true;
 }

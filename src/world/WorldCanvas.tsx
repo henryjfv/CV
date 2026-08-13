@@ -20,6 +20,9 @@ export function WorldCanvas({
   return (
     <Canvas
       dpr={quality.dpr}
+      // The long shadows are half of what says "sunset", so they survive down
+      // to the mid tier and are only dropped on phones and weak machines.
+      shadows={quality.tier === "high" || quality.tier === "mid"}
       gl={{
         antialias: quality.antialias,
         powerPreference: "high-performance",

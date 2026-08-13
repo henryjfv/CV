@@ -33,6 +33,47 @@ export const palette = {
 
 export type PaletteKey = keyof typeof palette;
 
+/**
+ * Façades, by technology lineage. Kept out of `palette` itself because these
+ * never reach the HUD: the stylesheet takes its variables from the object
+ * above, and a wall colour is not a state.
+ *
+ * All five are light. The whole point of a sunset city is that the buildings
+ * catch the low sun on one face, hold the sky on another and fall into the
+ * hemisphere light on the third — and a dark façade catches none of it. The
+ * three tones per volume come from the light, not from painting the faces.
+ */
+export const facade = {
+  cream: "#e3d5bd",
+  paleBlue: "#c8daed",
+  sage: "#c9dcd1",
+  terracotta: "#e8bda9",
+  /** Archived work. The one colour here that is not warm. */
+  legacy: "#b3b8c2",
+} as const;
+
+/** Cornices, mullions, rooftop plant: the trim that gives a volume its edges. */
+export const TRIM = "#8b8275";
+
+export const windows = {
+  lit: "#ffd489",
+  /** A minority of cells, so the grid does not read as one printed texture. */
+  litWarm: "#fff0c4",
+  dark: "#4e5a72",
+};
+
+/**
+ * The sky, top to horizon. Four stops rather than two: a single ramp from navy
+ * to orange goes through a muddy brown in the middle, and the violet band is
+ * what keeps it looking like dusk.
+ */
+export const sky = {
+  zenith: "#151c36",
+  upper: "#39406a",
+  lower: "#8a6a7c",
+  horizon: "#b8836e",
+};
+
 /** `--color-active: #4DA3FF; …` for the stylesheet. */
 export function paletteAsCssVariables(): string {
   return Object.entries(palette)

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { stations } from "@/data/world";
+import { stations, type Station } from "@/data/world";
 import { framingDistance, stationHalf, stationHeight } from "./metrics";
 
 /**
@@ -76,7 +76,77 @@ function viewpointFor(station: (typeof stations)[number]): Waypoint {
   };
 }
 
-const waypoints: Waypoint[] = [...APPROACH, ...stations.map(viewpointFor)];
+/**
+ * A point on the empty avenue, between two stations.
+ *
+ * Without these the rail ran viewpoint to viewpoint, and a viewpoint sits out
+ * on the avenue side of its own station. Two stations in opposite lanes then
+ * gave the camera a diagonal that cut the corner off whichever block lay
+ * between them — first Opensols, then BYONDIT. Moving buildings fixed one
+ * crossing and created the next.
+ *
+ * Returning to the centre line between stations fixes the class of problem
+ * instead of its instances: every viewpoint faces the avenue, so a leg that
+ * starts on the avenue has nothing standing in it. It also happens to be how
+ * the walk should read — down the middle, turning to look.
+ */
+function avenueBetween(
+  previous: Station,
+  next: Station,
+  from: Waypoint,
+  to: Waypoint
+): Waypoint {
+  /**
+   * Halfway between the two *viewpoints*, not between the two buildings.
+   *
+   * Between the buildings looks like the obvious answer and is wrong. A tall
+   * station stands its viewpoint a long way back — the closing tower's is 56
+   * units out, at z −244, while the midpoint between it and the station before
+   * it is z −267. A waypoint there sends the camera past the building and back,
+   * and a Catmull-Rom through a reversal overshoots further still: the final
+   * shot of the career ended up at half its intended distance with the tower's
+   * top and mast out of frame. It read as a framing bug and it was a routing
+   * one.
+   *
+   * Clamping the midpoint into range was the first fix and it was worse: it
+   * left a six-unit final segment carrying a thirty-unit tangent, which is a
+   * curve that leaves the rail entirely. Interpolating the viewpoints keeps
+   * every segment about as long as its neighbours, which is the property a
+   * Catmull-Rom actually needs.
+   */
+  const z = (from.eye.z + to.eye.z) / 2;
+
+  return {
+    eye: new THREE.Vector3(0, Math.max(7, (from.eye.y + to.eye.y) / 2), z),
+    // Already turning towards what is coming, so the arrival is not a snap.
+    focus: new THREE.Vector3(
+      next.position.x * 0.5,
+      stationHeight(next) * 0.45,
+      next.position.z
+    ),
+  };
+}
+
+const railIndex: Record<string, number> = {};
+const journeyWaypoints: Waypoint[] = [];
+const viewpoints = stations.map(viewpointFor);
+
+stations.forEach((station, index) => {
+  if (index > 0) {
+    journeyWaypoints.push(
+      avenueBetween(
+        stations[index - 1],
+        station,
+        viewpoints[index - 1],
+        viewpoints[index]
+      )
+    );
+  }
+  railIndex[station.id] = APPROACH.length + journeyWaypoints.length;
+  journeyWaypoints.push(viewpoints[index]);
+});
+
+const waypoints: Waypoint[] = [...APPROACH, ...journeyWaypoints];
 
 export const railPath = new THREE.CatmullRomCurve3(
   waypoints.map((waypoint) => waypoint.eye)
@@ -99,7 +169,7 @@ export const THRESHOLD = railAt(1);
  * navigation lands exactly where the walk would have stopped.
  */
 export const stationRail: Record<string, number> = Object.fromEntries(
-  stations.map((station, index) => [station.id, railAt(APPROACH.length + index)])
+  Object.entries(railIndex).map(([id, index]) => [id, railAt(index)])
 );
 
 /**

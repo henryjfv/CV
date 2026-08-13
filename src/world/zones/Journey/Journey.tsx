@@ -4,7 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { stations } from "@/data/world";
-import { getSnapshot, selectStation, subscribe } from "../../engine/journey";
+import { enterBuilding, getSnapshot, subscribe } from "../../engine/journey";
 import { stationHeight } from "../../engine/metrics";
 import { palette } from "../../engine/palette";
 import { Station } from "./Station";
@@ -20,7 +20,13 @@ const target = new THREE.Vector3();
  * when it actually changes — a handful of rerenders across the whole walk,
  * rather than sixty a second.
  */
-export function Journey({ animate }: { animate: boolean }) {
+export function Journey({
+  animate,
+  detailed,
+}: {
+  animate: boolean;
+  detailed: boolean;
+}) {
   // The active station comes from the journey state, which is also what the
   // navigation highlights. Deriving it here from camera distance instead — as
   // this did — meant the building that lit up and the entry marked in the nav
@@ -28,8 +34,22 @@ export function Journey({ animate }: { animate: boolean }) {
   const [activeId, setActiveId] = useState<string | null>(
     () => getSnapshot().zoneId
   );
+  // Which building the visitor is inside, if any. Separate from `activeId`:
+  // the station being approached and the one being stood in are different
+  // things, and only the second one turns its walls to glass.
+  const [enteredId, setEnteredId] = useState<string | null>(() => {
+    const snapshot = getSnapshot();
+    return snapshot.level === "building" ? snapshot.selectedId : null;
+  });
 
-  useEffect(() => subscribe((snapshot) => setActiveId(snapshot.zoneId)), []);
+  useEffect(
+    () =>
+      subscribe((snapshot) => {
+        setActiveId(snapshot.zoneId);
+        setEnteredId(snapshot.level === "building" ? snapshot.selectedId : null);
+      }),
+    []
+  );
 
   const lamp = useRef<THREE.PointLight>(null);
 
@@ -53,7 +73,7 @@ export function Journey({ animate }: { animate: boolean }) {
         ),
         step
       );
-      light.intensity += (300 - light.intensity) * step;
+      light.intensity += (160 - light.intensity) * step;
     } else {
       light.intensity += (0 - light.intensity) * step;
     }
@@ -61,9 +81,12 @@ export function Journey({ animate }: { animate: boolean }) {
 
   return (
     <group>
+      {/* Warm, and dimmer than it was under the graphite palette: a cold lamp
+          at full strength over a city at dusk reads as a searchlight, not as
+          the building the visitor has arrived at. */}
       <pointLight
         ref={lamp}
-        color={palette.cloud}
+        color="#ffd9b8"
         intensity={0}
         distance={70}
         decay={2}
@@ -73,8 +96,10 @@ export function Journey({ animate }: { animate: boolean }) {
           key={station.id}
           data={station}
           active={activeId === station.id}
+          entered={enteredId === station.id}
           animate={animate}
-          onSelect={() => selectStation(station.id)}
+          detailed={detailed}
+          onSelect={() => enterBuilding(station.id)}
         />
       ))}
     </group>

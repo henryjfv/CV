@@ -3,8 +3,12 @@
 import { useLayoutEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { stations } from "@/data/world";
+import {
+  CITY_CENTRE_X,
+  CITY_FAR_Z,
+  CITY_HALF_WIDTH,
+} from "../../engine/bounds";
 import { stationHalf } from "../../engine/metrics";
-import { palette } from "../../engine/palette";
 
 /**
  * The ground the career is built on: the corridor out of the atrium, the
@@ -17,8 +21,9 @@ const last = stations[stations.length - 1];
 
 const GRID_FROM = -26;
 /** Past the far face of the closing station, so the plan does not end early. */
-const GRID_TO = last.position.z - stationHalf(last) - 12;
-const GRID_HALF_WIDTH = 54;
+const GRID_TO = CITY_FAR_Z - 12;
+/** Reaches whichever district lane is furthest out, whatever that is today. */
+const GRID_HALF_WIDTH = Math.abs(CITY_CENTRE_X) + CITY_HALF_WIDTH + 20;
 /** The avenue stops at the steps of the last building, not inside it. */
 const PATH_TO = last.position.z + stationHalf(last);
 
@@ -36,10 +41,13 @@ function Corridor() {
   const ref = useRef<THREE.InstancedMesh>(null);
   const count = 22;
 
+  // Warm, not graphite. These ribs were lit by an interior when they were drawn;
+  // now they stand in the open under a setting sun, and the old colour read as
+  // black bars laid across the sky rather than as the structure they are.
   const material = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: new THREE.Color(palette.structure),
+        color: new THREE.Color("#8a7062"),
         roughness: 0.85,
         metalness: 0.1,
       }),
@@ -88,20 +96,27 @@ function GroundPlan() {
   const gridMaterial = useMemo(
     () =>
       new THREE.LineBasicMaterial({
-        color: new THREE.Color(palette.structureDim),
+        color: new THREE.Color("#7b5f52"),
         transparent: true,
-        opacity: 0.55,
+        opacity: 0.32,
       }),
     []
   );
 
+  /**
+   * The kerbs are warm now, and dimmer.
+   *
+   * They were the interface blue, untone-mapped, which under the graphite
+   * palette was one accent among several. Against a sunset it was the loudest
+   * thing on screen — two neon rails running the length of a city that has no
+   * other neon in it.
+   */
   const pathMaterial = useMemo(
     () =>
       new THREE.MeshBasicMaterial({
-        color: new THREE.Color(palette.active),
+        color: new THREE.Color("#e8b48a"),
         transparent: true,
-        opacity: 0.3,
-        toneMapped: false,
+        opacity: 0.22,
         depthWrite: false,
       }),
     []

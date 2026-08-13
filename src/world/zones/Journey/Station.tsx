@@ -3,18 +3,21 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo } from "react";
 import * as THREE from "three";
+import { specFor } from "@/data/city";
 import type { LayerId, Station as StationData, StationLayer } from "@/data/world";
-import { Building } from "./Building";
+import { Facade } from "../../city/Facade";
 import { FlowParticles, type FlowSegment } from "../../engine/FlowParticles";
 import { NodeIcon } from "../../engine/NodeIcon";
 import {
   BUILDING_DEPTH,
   BUILDING_WIDTH,
-  LAYER_HEIGHT,
+  FACADE_DEPTH,
   NODE_SIZE,
   NODE_SPREAD,
   stationHalf,
   stationHeight,
+  tierY,
+  worldTiers,
 } from "../../engine/metrics";
 import { palette } from "../../engine/palette";
 import { ProjectedText } from "../../engine/ProjectedText";
@@ -33,9 +36,6 @@ import { ProjectedText } from "../../engine/ProjectedText";
  * running between them. Nobody has to read a word to see the difference.
  */
 
-/** Bottom to top in the world — the reverse of how a diagram is read on paper. */
-const WORLD_ORDER: LayerId[] = ["data", "service", "interface", "ai"];
-
 const LAYER_COLOR: Record<LayerId, string> = {
   data: palette.data,
   service: palette.active,
@@ -46,31 +46,36 @@ const LAYER_COLOR: Record<LayerId, string> = {
 export function Station({
   data,
   active,
+  entered,
   animate,
+  detailed,
   onSelect,
 }: {
   data: StationData;
   active: boolean;
+  /** True while the visitor is inside this building. */
+  entered: boolean;
   animate: boolean;
+  /** False on weak devices: massing and windows only, no rooftop detail. */
+  detailed: boolean;
   onSelect: () => void;
 }) {
   const half = stationHalf(data);
   const height = stationHeight(data);
+  const spec = specFor(data.id);
   const { x, z } = data.position;
 
   /** Tiers in world order, with the y each one sits at. */
-  const tiers = useMemo(() => {
-    const present = WORLD_ORDER.map((id) =>
-      data.layers.find((layer) => layer.id === id)
-    ).filter((layer): layer is StationLayer => Boolean(layer));
-
-    return present.map((layer, index) => ({
-      layer,
-      y: 1.4 + index * LAYER_HEIGHT,
-      color: new THREE.Color(LAYER_COLOR[layer.id]),
-      nodes: layout(layer.nodes.length, half),
-    }));
-  }, [data.layers, half]);
+  const tiers = useMemo(
+    () =>
+      worldTiers(data).map((layer, index) => ({
+        layer,
+        y: tierY(index),
+        color: new THREE.Color(LAYER_COLOR[layer.id]),
+        nodes: layout(layer.nodes.length, half),
+      })),
+    [data, half]
+  );
 
   /** One line per node, from the node down into the tier below it. */
   const { connections, flow } = useMemo(() => {
@@ -141,7 +146,15 @@ export function Station({
       </mesh>
 
       <Platform half={half} active={active} />
-      <Building half={half} height={height} active={active} />
+      <Facade
+        spec={spec}
+        half={half}
+        height={height}
+        active={active}
+        entered={entered}
+        animate={animate}
+        detailed={detailed}
+      />
 
       <lineSegments geometry={connections} material={connectionMaterial} />
       <FlowParticles segments={flow} active={active} animate={animate} />
@@ -268,17 +281,28 @@ function Tier({
         <lineBasicMaterial color={color} transparent opacity={active ? 0.9 : 0.45} />
       </lineSegments>
 
-      {/* Tier name, engraved into the edge of its own deck. Always readable:
-          this is the part that says the world is an architecture. */}
+      {/* Tier name, set on the front of its own floor — and set *outside* the
+          façade, which is what it took to make it readable. Sitting on the edge
+          of the deck, the plate turns to face the camera about its own centre
+          and swings half its width back inside the building, where the slab it
+          is naming cuts the far half of the word off. Every tier lost its first
+          few letters from most angles: BACKEND read as KEND. */}
       <ProjectedText
         text={layer.label}
         size={0.78}
-        maxWidth={width * 0.5}
-        position={[0, -0.5, depth / 2 + 0.14]}
+        maxWidth={width * 0.95}
+        position={[0, -0.5, (half * FACADE_DEPTH) / 2 + 0.9]}
         color={color.getStyle()}
         opacity={active ? 1 : 0.5}
         tracking={0.24}
         billboard
+        avoidCollisions
+        // The highest priority in the scene. The floor names are the structure
+        // of the argument — which tier sits over which — and the first pass had
+        // them losing to the technology labels standing on them, so a building
+        // could show DOCKER and CI/CD with no MICROSERVICES to put them in.
+        // A tool without its tier is trivia.
+        priority={active ? 4 : 1}
       />
 
       {nodes.map((node, index) => (
@@ -316,6 +340,10 @@ function Tier({
               opacity={0.95}
               tracking={0.12}
               billboard
+              avoidCollisions
+              // Below the floor names, above everything else: a node is only
+              // labelled at the station the visitor has actually reached.
+              priority={2}
             />
           ) : null}
         </group>
@@ -360,6 +388,8 @@ function Boundary({
         opacity={active ? 0.8 : 0.35}
         tracking={0.26}
         billboard
+        avoidCollisions
+        priority={active ? 1 : 0}
       />
     </group>
   );

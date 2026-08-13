@@ -25,19 +25,6 @@ export type StationLayer = {
 
 export const LAYER_ORDER: LayerId[] = ["interface", "service", "data", "ai"];
 
-/**
- * Half the width of a station's platform, by complexity 1–5. Lives here rather
- * than with the camera code because the layout below depends on it: stations
- * have to be spaced by how big they are, not by numbers picked by eye.
- */
-export const STATION_HALF: Record<number, number> = {
-  1: 6,
-  2: 8,
-  3: 10,
-  4: 13,
-  5: 17,
-};
-
 export type Station = {
   id: string;
   /** Short label carved into the world, e.g. "2016". */
@@ -57,14 +44,18 @@ export type Station = {
    */
   boundary?: string;
   /**
-   * Where the station stands. They alternate across the avenue so the visitor
-   * passes between them, and the last one closes the axis head-on: the career
-   * does not end beside the path, it ends at the end of it.
+   * Where the station stands.
    *
-   * Spacing follows the platforms: each station is set back far enough that
-   * the one before it is out of shot, and the closing station sits far enough
-   * down the axis that the camera can stand back and hold all of it — the
-   * previous layout put that final viewpoint on top of Imagine Apps.
+   * Z is the calendar: the visitor walks forwards through time, and spacing
+   * follows the footprints so each station is set back far enough that the one
+   * before it is out of shot. The closing station sits far enough down the axis
+   * that the camera can stand back and hold all of it — an earlier layout put
+   * that final viewpoint on top of Imagine Apps.
+   *
+   * X is the district, and only the district: `DISTRICT_X` in `city.ts` owns
+   * those lanes. Mobile runs down the left, backend down the right, client work
+   * in the outer right lane, and the data district closes the axis head-on. The
+   * career does not end beside the path, it ends at the end of it.
    */
   position: { x: number; z: number };
   /** The underlying CV entry. */
@@ -127,7 +118,8 @@ export const stations: Station[] = [
       { id: "service", label: "BACKEND", nodes: ["Node.js", "TypeScript"] },
       { id: "data", label: "DATA", nodes: ["MySQL", "Supabase"] },
     ],
-    position: { x: -30, z: -100 },
+    // Client work has its own lane, further out than the two staff districts.
+    position: { x: -62, z: -100 },
     role: byId("freelance"),
   },
   {
@@ -187,7 +179,7 @@ export const stations: Station[] = [
         nodes: ["MongoDB", "SQL Server", "Sequelize", "AWS S3"],
       },
     ],
-    position: { x: 30, z: -200 },
+    position: { x: -62, z: -200 },
     role: byId("imagineapps-freelance"),
   },
   {

@@ -3,9 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { stations } from "@/data/world";
 import {
+  exitBuilding,
   getSnapshot,
+  goToFloor,
   journey,
-  selectStation,
   subscribe,
   type JourneySnapshot,
 } from "@/world/engine/journey";
@@ -36,11 +37,12 @@ export function Hud({ onExitToText }: { onExitToText: () => void }) {
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  const closePanel = useCallback(() => selectStation(null), []);
+  const closePanel = useCallback(() => exitBuilding(), []);
 
-  const selected = snapshot.selectedId
-    ? stations.find((station) => station.id === snapshot.selectedId)
-    : undefined;
+  const selected =
+    snapshot.level === "building" && snapshot.selectedId
+      ? stations.find((station) => station.id === snapshot.selectedId)
+      : undefined;
 
   const atStation = stations.some((station) => station.id === snapshot.zoneId);
 
@@ -84,7 +86,14 @@ export function Hud({ onExitToText }: { onExitToText: () => void }) {
         <span>Click a building to open it</span>
       </p>
 
-      {selected ? <StationPanel station={selected} onClose={closePanel} /> : null}
+      {selected ? (
+        <StationPanel
+          station={selected}
+          floor={snapshot.floor}
+          onFloor={goToFloor}
+          onClose={closePanel}
+        />
+      ) : null}
     </div>
   );
 }

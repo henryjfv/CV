@@ -401,25 +401,60 @@ html[data-boot="done"] .boot {
   margin-top: 0.7rem;
 }
 
+.panel__layer {
+  /* Room for the marker that shows which floor the camera is standing on. */
+  padding-left: 0.7rem;
+  border-left: 2px solid transparent;
+  transition:
+    border-color 200ms ease,
+    opacity 200ms ease;
+  opacity: 0.55;
+}
+
+/* The floor the visitor is on. Scrolling the world moves this marker, and
+   clicking a floor moves the world — one state, shown in two places. */
+.panel__layer.is-current {
+  border-left-color: currentColor;
+  opacity: 1;
+}
+
 .panel__layer dt {
   font-family: var(--font-mono), monospace;
   font-size: 0.6rem;
   letter-spacing: 0.18em;
-  color: var(--color-text-muted);
+  color: inherit;
+}
+
+.panel__layer dt button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.panel__layer dt button:hover {
+  color: var(--color-text);
 }
 
 /* Each tier keeps the colour it has in the world, so the panel and the
-   building are recognisably the same thing. */
-.panel__layer--interface dt {
+   building are recognisably the same thing. Set on the row rather than on the
+   label, so the current-floor marker inherits it too. */
+.panel__layer--interface {
   color: var(--color-text);
 }
-.panel__layer--service dt {
+.panel__layer--service {
   color: var(--color-active);
 }
-.panel__layer--data dt {
+.panel__layer--data {
   color: var(--color-data);
 }
-.panel__layer--ai dt {
+.panel__layer--ai {
   color: var(--color-ai);
 }
 
