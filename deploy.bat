@@ -4,7 +4,12 @@ set -e
 
 npm run build
 
-cd dist
+cd out
+
+# GitHub Pages runs Jekyll over whatever it is given, and Jekyll skips every
+# directory whose name starts with an underscore. Without this file the whole
+# of _next/ is dropped and the site is served without scripts or styles.
+touch .nojekyll
 
 # Explicit branch name: git init follows init.defaultBranch, which is "main"
 # here, so the old "master:gh-pages" refspec no longer matched anything.

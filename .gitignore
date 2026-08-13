@@ -1,6 +1,11 @@
 .DS_Store
 node_modules
-/dist
+
+# Next.js build output. `out/` is what deploy.bat force-pushes to gh-pages.
+/.next
+/out
+next-env.d.ts
+*.tsbuildinfo
 
 # SSH keys must never live in the repo
 machenry
