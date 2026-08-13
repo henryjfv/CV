@@ -4,9 +4,12 @@ import { useFrame } from "@react-three/fiber";
 import { useMemo } from "react";
 import * as THREE from "three";
 import type { LayerId, Station as StationData, StationLayer } from "@/data/world";
+import { Building } from "./Building";
 import { FlowParticles, type FlowSegment } from "../../engine/FlowParticles";
 import { NodeIcon } from "../../engine/NodeIcon";
 import {
+  BUILDING_DEPTH,
+  BUILDING_WIDTH,
   LAYER_HEIGHT,
   NODE_SIZE,
   NODE_SPREAD,
@@ -138,6 +141,7 @@ export function Station({
       </mesh>
 
       <Platform half={half} active={active} />
+      <Building half={half} height={height} active={active} />
 
       <lineSegments geometry={connections} material={connectionMaterial} />
       <FlowParticles segments={flow} active={active} animate={animate} />
@@ -227,12 +231,14 @@ function Tier({
   nodes: { x: number; z: number }[];
   active: boolean;
 }) {
+  // The floor slab is the building's own footprint: a tier that is narrower
+  // than the structure around it reads as a shelf, not as a storey.
+  const width = half * BUILDING_WIDTH;
+  const depth = half * BUILDING_DEPTH;
+
   const deckOutline = useMemo(
-    () =>
-      new THREE.EdgesGeometry(
-        new THREE.BoxGeometry(half * 1.55, 0.34, half * 1.05)
-      ),
-    [half]
+    () => new THREE.EdgesGeometry(new THREE.BoxGeometry(width, 0.34, depth)),
+    [width, depth]
   );
 
   const nodeGeometry = useMemo(
@@ -249,7 +255,7 @@ function Tier({
       {/* The deck: a thin plate, so the tier reads as a level of a system
           rather than another solid box. */}
       <mesh position={[0, -0.5, 0]}>
-        <boxGeometry args={[half * 1.55, 0.34, half * 1.05]} />
+        <boxGeometry args={[width, 0.34, depth]} />
         <meshStandardMaterial
           color={new THREE.Color("#1B222B")}
           emissive={color}
@@ -266,9 +272,9 @@ function Tier({
           this is the part that says the world is an architecture. */}
       <ProjectedText
         text={layer.label}
-        size={0.8}
-        maxWidth={half * 1.1}
-        position={[0, -0.85, half * 0.92]}
+        size={0.78}
+        maxWidth={width * 0.5}
+        position={[0, -0.5, depth / 2 + 0.14]}
         color={color.getStyle()}
         opacity={active ? 1 : 0.5}
         tracking={0.24}

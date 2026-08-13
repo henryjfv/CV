@@ -15,8 +15,18 @@ export const LAYER_HEIGHT = 3.6;
 /** Edge length of a technology node. */
 export const NODE_SIZE = 1.5;
 
-/** How far a tier's nodes spread from the centre, as a share of the half-width. */
-export const NODE_SPREAD = 1.15;
+/**
+ * How far a tier's nodes spread from the centre, as a share of the half-width.
+ *
+ * Tight enough that every node stands *inside* the building. The tiers used to
+ * be open platforms, so nodes could hang off the edges; now that there are
+ * columns and a roof around them, anything past the façade reads as broken.
+ */
+export const NODE_SPREAD = 0.72;
+
+/** The building's footprint, as a share of the platform it stands on. */
+export const BUILDING_WIDTH = 1.9;
+export const BUILDING_DEPTH = 1.25;
 
 export function stationHalf(station: Station): number {
   return STATION_HALF[station.complexity];
@@ -28,13 +38,14 @@ export function stationHeight(station: Station): number {
 }
 
 /**
- * Half the width of what is actually drawn — which is wider than the platform,
- * because the nodes sit out past its edges and carry labels of their own.
- * Framing on the platform alone cropped the outermost technology of every
- * station.
+ * Half the width of what is actually drawn. The platform is now the widest
+ * thing at a station — the building sits within it and the nodes within that —
+ * so this is the platform plus air.
  */
 export function stationContentHalf(station: Station): number {
-  return stationHalf(station) * NODE_SPREAD + NODE_SIZE / 2 + 1;
+  // The widest thing is not the building but the perimeter drawn around it,
+  // where a station has one.
+  return stationHalf(station) * 1.15 + 1.5;
 }
 
 /**
@@ -57,7 +68,7 @@ export function framingDistance(
     (stationHeight(station) + NODE_SIZE * 2) / 2 / Math.tan(halfFov);
   const horizontalReach =
     stationContentHalf(station) / (Math.tan(halfFov) * aspect);
-  // A fifth again, so the system has air around it instead of touching the
-  // edges of the frame.
-  return Math.max(verticalReach, horizontalReach) * 1.2;
+  // A third again, so the building has air around it instead of filling the
+  // frame edge to edge.
+  return Math.max(verticalReach, horizontalReach) * 1.35;
 }

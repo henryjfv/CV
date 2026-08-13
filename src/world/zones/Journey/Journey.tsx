@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { stations } from "@/data/world";
 import { getSnapshot, selectStation, subscribe } from "../../engine/journey";
+import { stationHeight } from "../../engine/metrics";
 import { palette } from "../../engine/palette";
 import { Station } from "./Station";
 
@@ -42,8 +43,14 @@ export function Journey({ animate }: { animate: boolean }) {
     const station = stations.find((entry) => entry.id === activeId);
     const step = Math.min(delta * 2, 1);
     if (station) {
+      // Above the roof, not inside the building: a lamp at a fixed height ended
+      // up between the floors of the taller stations and glowed through them.
       light.position.lerp(
-        target.set(station.position.x, 14, station.position.z),
+        target.set(
+          station.position.x,
+          stationHeight(station) + 9,
+          station.position.z
+        ),
         step
       );
       light.intensity += (300 - light.intensity) * step;
